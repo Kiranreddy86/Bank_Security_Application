@@ -14,15 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
 	private String name;
-
 	private String username;
-
 	private String password;
-
 	private String address;
-
 	private Long number;
-
 	private String identityProof;
 	private List<Account> accountList = new ArrayList<>();
 

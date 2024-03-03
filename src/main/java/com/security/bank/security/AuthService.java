@@ -1,4 +1,4 @@
-package com.security.bank.service;
+package com.security.bank.security;
 
 import com.security.bank.jwt.JwtAuthenticationHelper;
 import com.security.bank.jwt.JwtRequest;
