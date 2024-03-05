@@ -15,7 +15,9 @@ import com.security.bank.entity.BranchType;
 
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Long>{
-	Optional<Account> findByAccountNumber(Long accountNumber);
+	@Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
+	Optional<Account> findByAccountnumber(@Param("accountNumber") Long accountNumber);
+
 	@Query(value = "SELECT * FROM account where status=Active",nativeQuery = true)
 	List<Account>findAllActiveAccounts();
 	@Query(value = "SELECT * FROM account where status!=Active",nativeQuery = true)
@@ -26,5 +28,4 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 	List<Account>findAllByBranch(@Param("type") BranchType branchType);
 	@Query(value = "SELECT * FROM account where user_id=: userId",nativeQuery = true)
     List<Account> getAllById(@Param("userId") Long userId);
-	Optional<Account> findByAccountnumber(Long accountNumber);
 }

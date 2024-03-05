@@ -15,16 +15,21 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.security.bank.entity.AccountType.*;
+
 @Service
 public class AccountService {
+    private final UserRepo userRepo;
+    private final AccountRepo accountRepo;
+    private final CardRepo cardRepo;
 
-    @Autowired
-    UserRepo userRepo;
-    @Autowired
-    AccountRepo accountRepo;
-    @Autowired
-    CardRepo cardRepo;
-    public ResponseEntity<User> createAccount(AccountDto accountDto, Long userId) {
+    public AccountService(UserRepo userRepo, AccountRepo accountRepo, CardRepo cardRepo) {
+        this.userRepo = userRepo;
+        this.accountRepo = accountRepo;
+        this.cardRepo = cardRepo;
+    }
+
+    public ResponseEntity<Account> createAccount(AccountDto accountDto, Long userId) {
         try {
             User user = userRepo.findById(userId).orElse(null);
 
@@ -32,30 +37,30 @@ public class AccountService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             Account account = new Account();
-            account.setAccountType(AccountType.valueOf(accountDto.getAccountTtype()));
+            account.setAccountType(AccountType.valueOf(accountDto.getAccountType()));
             account.setBalance(accountDto.getBalance());
             account.setNominee(accountDto.getNominee());
             account.setProof(account.getProof());
             account.setStatus("ACTIVE");
             Card card=new Card();
-            String accountType = String.valueOf(accountDto.getAccountTtype());
-            if(accountType.equals("SAVINGS")){
+            String accountType = String.valueOf(accountDto.getAccountType());
+            if(accountType.equals(SAVINGS)){
                 card.setCardType(CardType.DEBIT_GLOBAL);
                 card.setDailyLimit(40000);
-                account.setAccountType(AccountType.SAVINGS);
+                account.setAccountType(SAVINGS);
                 account.setInterestRate(270);
                 account.setBranch(BranchType.BOB);
 
-            }else if(accountType.equals("CURRENT")){
+            }else if(accountType.equals(CURRENT)){
                 card.setCardType(CardType.CREDIT_PREMIUM);
                 card.setDailyLimit(50000);
-                account.setAccountType(AccountType.CURRENT);
+                account.setAccountType(CURRENT);
                 account.setInterestRate(52);
                 account.setBranch(BranchType.ICIC);
-            }else if(accountType.equals("SALARY")){
+            }else if(accountType.equals(SALARY)){
                 card.setCardType(CardType.CREDIT_MASTER);
                 card.setDailyLimit(75000);
-                account.setAccountType(AccountType.SALARY);
+                account.setAccountType(SALARY);
                 account.setInterestRate(41);
                 account.setBranch(BranchType.HDFC);
             }else{
@@ -74,7 +79,7 @@ public class AccountService {
             accountList.add(account);
             user.setAccountList(accountList);
 
-            return ResponseEntity.ok(userRepo.save(user));
+            return ResponseEntity.ok(account);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -87,11 +92,11 @@ public class AccountService {
     }
 
     public ResponseEntity<Double> getByAccountNumber(Long accountNumber) {
-        Account acc=accountRepo.findByAccountNumber(accountNumber).get();
+        Account acc=accountRepo.findByAccountnumber(accountNumber).get();
         return ResponseEntity.ok(acc.getBalance());
     }
     public ResponseEntity<Nominee> getNomineeByAccountNumber(Long accountNumber) {
-        Account acc=accountRepo.findByAccountNumber(accountNumber).get();
+        Account acc=accountRepo.findByAccountnumber(accountNumber).get();
         return ResponseEntity.ok(acc.getNominee());
     }
 

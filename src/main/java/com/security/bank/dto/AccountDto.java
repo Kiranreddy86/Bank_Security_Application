@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountDto {
 	
-	private String accountTtype;
+	private String accountType;
 	private double balance;
 	private String proof;
 	private Nominee nominee;
