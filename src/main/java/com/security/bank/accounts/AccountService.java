@@ -1,6 +1,7 @@
 package com.security.bank.accounts;
 
 import com.security.bank.dto.AccountDto;
+import com.security.bank.dto.NomineeDto;
 import com.security.bank.entity.*;
 import com.security.bank.repository.AccountRepo;
 import com.security.bank.repository.CardRepo;
@@ -79,4 +80,29 @@ public class AccountService {
         }
     }
 
+    public ResponseEntity<List<Account>> getAllById(Long userId) {
+        List<Account> accountList=accountRepo.getAllById(userId);
+        return ResponseEntity.ok(accountList);
+    }
+
+    public ResponseEntity<Double> getByAccountNumber(Long accountNumber) {
+        Account acc=accountRepo.findByAccountNumber(accountNumber).get();
+        return ResponseEntity.ok(acc.getBalance());
+    }
+    public ResponseEntity<Nominee> getNomineeByAccountNumber(Long accountNumber) {
+        Account acc=accountRepo.findByAccountNumber(accountNumber).get();
+        return ResponseEntity.ok(acc.getNominee());
+    }
+
+    public ResponseEntity<Account> updateNomineeByAc(NomineeDto nomineeDto, Long accountId) {
+        Account acc=accountRepo.findById(accountId).get();
+        Nominee nominee=new Nominee();
+        nominee.setName(nomineeDto.getName());
+        nominee.setAccountNumber((nomineeDto.getAccountNumber()));
+        nominee.setAge(nomineeDto.getAge());
+        nominee.setGender(nomineeDto.getGender());
+        nominee.setRelation(nomineeDto.getRelation());
+        acc.setNominee(nominee);
+        return ResponseEntity.ok(accountRepo.save(acc));
+    }
 }
