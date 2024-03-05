@@ -20,7 +20,6 @@ public class AccountService {
     UserRepo userRepo;
     @Autowired
     AccountRepo accountRepo;
-
     @Autowired
     CardRepo cardRepo;
     public ResponseEntity<User> createAccount(AccountDto accountDto, Long userId) {
@@ -30,7 +29,6 @@ public class AccountService {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-
             Account account = new Account();
             account.setAccountType(AccountType.valueOf(accountDto.getAccountTtype()));
             account.setBalance(accountDto.getBalance());
@@ -38,20 +36,21 @@ public class AccountService {
             account.setProof(account.getProof());
             account.setStatus("ACTIVE");
             Card card=new Card();
-            if(AccountType.valueOf(accountDto.getAccountTtype()).equals("SAVINGS")){
+            String accountType = String.valueOf(accountDto.getAccountTtype());
+            if(accountType.equals("SAVINGS")){
                 card.setCardType(CardType.DEBIT_GLOBAL);
                 card.setDailyLimit(40000);
                 account.setAccountType(AccountType.SAVINGS);
                 account.setInterestRate(270);
                 account.setBranch(BranchType.BOB);
 
-            }else if(AccountType.valueOf(accountDto.getAccountTtype()).equals("CURRENT")){
+            }else if(accountType.equals("CURRENT")){
                 card.setCardType(CardType.CREDIT_PREMIUM);
                 card.setDailyLimit(50000);
                 account.setAccountType(AccountType.CURRENT);
                 account.setInterestRate(52);
                 account.setBranch(BranchType.ICIC);
-            }else if(AccountType.valueOf(accountDto.getAccountTtype()).equals("SALARY")){
+            }else if(accountType.equals("SALARY")){
                 card.setCardType(CardType.CREDIT_MASTER);
                 card.setDailyLimit(75000);
                 account.setAccountType(AccountType.SALARY);
