@@ -1,6 +1,7 @@
 package com.security.bank.accounts;
 
 import com.security.bank.dto.AccountDto;
+import com.security.bank.dto.KycDto;
 import com.security.bank.dto.NomineeDto;
 import com.security.bank.entity.Account;
 import com.security.bank.entity.Nominee;
@@ -35,6 +36,14 @@ public class AccountController {
     @PutMapping("/updateNominee/{accountId}")
     public ResponseEntity<Account> updateNomineeByAc(@RequestBody NomineeDto nomineeDto,@PathVariable Long accountId){
         return accountService.updateNomineeByAc(nomineeDto,accountId);
+    }
+    @GetMapping("/getKycDetails")
+    public ResponseEntity<User> getKycDetails(@RequestParam Long accountNumber){
+        return accountService.getUserByAn(accountNumber);
+    }
+    @PutMapping("/updateKyc/{accountId}")
+    public ResponseEntity<User> updateKyc(@RequestBody KycDto kycDto,@PathVariable Long accountId){
+        return accountService.updateKyc(kycDto,accountId);
     }
 
 }

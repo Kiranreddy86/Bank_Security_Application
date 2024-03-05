@@ -3,6 +3,7 @@ package com.security.bank.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.security.bank.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +26,5 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 	List<Account>findAllByBranch(@Param("type") BranchType branchType);
 	@Query(value = "SELECT * FROM account where user_id=: userId",nativeQuery = true)
     List<Account> getAllById(@Param("userId") Long userId);
+	Optional<Account> findByAccountnumber(Long accountNumber);
 }

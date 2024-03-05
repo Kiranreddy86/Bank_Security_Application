@@ -36,7 +36,6 @@ public class User implements UserDetails{
 	private String address;
 	private Long number;
 	private String identityProof;
-	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id")
 	private Role roles;

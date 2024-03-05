@@ -1,6 +1,7 @@
 package com.security.bank.accounts;
 
 import com.security.bank.dto.AccountDto;
+import com.security.bank.dto.KycDto;
 import com.security.bank.dto.NomineeDto;
 import com.security.bank.entity.*;
 import com.security.bank.repository.AccountRepo;
@@ -104,5 +105,26 @@ public class AccountService {
         nominee.setRelation(nomineeDto.getRelation());
         acc.setNominee(nominee);
         return ResponseEntity.ok(accountRepo.save(acc));
+    }
+
+    public ResponseEntity<User> getUserByAn(Long accountNumber) {
+        Account acc=accountRepo.findByAccountnumber(accountNumber).get();
+        User user=acc.getUser();
+        user.setAccountList(null);
+        user.setInvestmentList(null);
+        return ResponseEntity.ok(user);
+    }
+
+    public ResponseEntity<User> updateKyc(KycDto kycDto, Long accountId) {
+        Account acc=accountRepo.findById(accountId).get();
+        User user=acc.getUser();
+        user.setName(kycDto.getName());
+        user.setAddress(kycDto.getAddress());
+        user.setIdentityProof(kycDto.getIdentityProof());
+        user.setAccountList(null);
+        user.setInvestmentList(null);
+        acc.setUser(user);
+        userRepo.save(user);
+        return ResponseEntity.ok(accountRepo.save(acc).getUser());
     }
 }
