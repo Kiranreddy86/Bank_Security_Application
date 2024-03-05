@@ -45,5 +45,8 @@ public class AccountController {
     public ResponseEntity<User> updateKyc(@RequestBody KycDto kycDto,@PathVariable Long accountId){
         return accountService.updateKyc(kycDto,accountId);
     }
-
+    @GetMapping("/getAccount/summary")
+    public ResponseEntity<Account> getAccountSummary(@RequestParam Long accountNumber){
+        return accountService.getAccountSummary(accountNumber);
+    }
 }

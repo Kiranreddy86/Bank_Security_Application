@@ -127,4 +127,10 @@ public class AccountService {
         userRepo.save(user);
         return ResponseEntity.ok(accountRepo.save(acc).getUser());
     }
+
+    public ResponseEntity<Account> getAccountSummary(Long accountNumber) {
+        Account acc=accountRepo.findByAccountnumber(accountNumber).get();
+        acc.setUser(null);
+        return ResponseEntity.ok(acc);
+    }
 }
