@@ -28,7 +28,6 @@ public class AccountService {
         this.accountRepo = accountRepo;
         this.cardRepo = cardRepo;
     }
-
     public ResponseEntity<Account> createAccount(AccountDto accountDto, Long userId) {
         try {
             User user = userRepo.findById(userId).orElse(null);
