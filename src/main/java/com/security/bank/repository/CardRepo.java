@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CardRepo extends JpaRepository<Card,Long> {
     Optional<Card> findByCardNumber(Long cardNumber);
-    @Query(value = "SELECT * FROM card c LEFT JOIN account a on a.id=c.account_id where a.account_number=: an and c.card_number=: cn")
+    @Query(value = "SELECT * FROM card c LEFT JOIN account a on a.id=c.account_id where a.account_number=: an and c.card_number=: cn",nativeQuery = true)
     Card block(@Param("an") Long accountNumber,@Param("cn") Long cardNumber);
 }

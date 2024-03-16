@@ -6,6 +6,7 @@ import com.security.bank.dto.NomineeDto;
 import com.security.bank.entity.*;
 import com.security.bank.repository.AccountRepo;
 import com.security.bank.repository.CardRepo;
+import com.security.bank.repository.NomineeRepo;
 import com.security.bank.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.security.bank.entity.AccountType.*;
@@ -22,16 +25,17 @@ public class AccountService {
     private final UserRepo userRepo;
     private final AccountRepo accountRepo;
     private final CardRepo cardRepo;
+    private final NomineeRepo nomineeRepo;
 
-    public AccountService(UserRepo userRepo, AccountRepo accountRepo, CardRepo cardRepo) {
+    public AccountService(UserRepo userRepo, AccountRepo accountRepo, CardRepo cardRepo, NomineeRepo nomineeRepo) {
         this.userRepo = userRepo;
         this.accountRepo = accountRepo;
         this.cardRepo = cardRepo;
+        this.nomineeRepo = nomineeRepo;
     }
     public ResponseEntity<Account> createAccount(AccountDto accountDto, Long userId) {
         try {
             User user = userRepo.findById(userId).orElse(null);
-
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -42,6 +46,8 @@ public class AccountService {
             account.setProof(account.getProof());
             account.setStatus("ACTIVE");
             Card card=new Card();
+            Date allocationDate = new Date(); // You may need to set the allocation date based on your application logic
+            card.setAllocationDate(allocationDate);
             String accountType = String.valueOf(accountDto.getAccountType());
             if(accountType.equals(SAVINGS)){
                 card.setCardType(CardType.DEBIT_GLOBAL);
@@ -49,7 +55,6 @@ public class AccountService {
                 account.setAccountType(SAVINGS);
                 account.setInterestRate(270);
                 account.setBranch(BranchType.BOB);
-
             }else if(accountType.equals(CURRENT)){
                 card.setCardType(CardType.CREDIT_PREMIUM);
                 card.setDailyLimit(50000);
@@ -67,17 +72,23 @@ public class AccountService {
                 account.setInterestRate(74);
                 account.setBranch(BranchType.SBI);
             }
-            cardRepo.save(card);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(allocationDate);
+            calendar.add(Calendar.YEAR, 5);
+            Date expiryDate = calendar.getTime();
+            card.setExpiryDate(expiryDate);
             account.setCard(card);
+            account.setUser(user);
+            account.setNominee(accountDto.getNominee());
+            cardRepo.save(card);
+            nomineeRepo.save(accountDto.getNominee());
             accountRepo.save(account);
-
             List<Account> accountList = user.getAccountList();
             if (accountList == null) {
                 accountList = new ArrayList<>();
             }
             accountList.add(account);
             user.setAccountList(accountList);
-
             return ResponseEntity.ok(account);
         } catch (Exception e) {
             e.printStackTrace();

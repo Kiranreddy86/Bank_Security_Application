@@ -39,4 +39,7 @@ public class Investment {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "account_id")
+	private Account account;
 }
