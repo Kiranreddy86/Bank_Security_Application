@@ -1,6 +1,7 @@
 package com.security.bank.cards;
 
 import com.security.bank.dto.CardDto;
+import com.security.bank.entity.Card;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +21,9 @@ public class CardController {
     @PostMapping("/apply/new")
     public ResponseEntity applyNew(@RequestParam Long accNum, @RequestBody CardDto cardDto){
         return cardService.applyNew(accNum,cardDto);
+    }
+    @PutMapping("/setting")
+    public ResponseEntity<Card> setting(@RequestBody Card card,@RequestParam Long cardNumber){
+        return cardService.setting(card,cardNumber);
     }
 }
