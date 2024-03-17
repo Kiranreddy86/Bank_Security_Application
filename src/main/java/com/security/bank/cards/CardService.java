@@ -25,8 +25,9 @@ public class CardService {
 
     public ResponseEntity block(Long accountNumber, Long cardNumber) {
         Card card = cardRepo.block(accountNumber,cardNumber);
-        card.setStatus("Block");
-        return ResponseEntity.ok(cardRepo.save(card));
+        card.setStatus("BLOCK");
+        cardRepo.save(card);
+        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity applyNew(Long accNum, CardDto cardDto) {

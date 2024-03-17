@@ -11,8 +11,8 @@ public class InvestmentController {
     public InvestmentController(InvestmentService investmentService) {
         this.investmentService = investmentService;
     }
-//    @PostMapping("/now")
-//    public ResponseEntity now(@RequestParam Long accountId, @RequestBody InvestmentDto investmentDto){
-//        return investmentService.now(accountId,investmentDto);
-//    }
+    @PostMapping("/now")
+    public ResponseEntity now(@RequestParam Long accountId, @RequestBody InvestmentDto investmentDto){
+        return investmentService.now(accountId,investmentDto);
+    }
 }

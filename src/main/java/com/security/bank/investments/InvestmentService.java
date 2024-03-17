@@ -17,12 +17,20 @@ public class InvestmentService {
         this.investmentRepo = investmentRepo;
         this.accountRepo = accountRepo;
     }
-//    public ResponseEntity now(Long accountId, InvestmentDto investmentDto) {
-//        Account account=accountRepo.findById(accountId).get();
-//        Investment investment=new Investment();
-//        investment.setAmount(investmentDto.getAmount());
-//        investment.setDuration(investmentDto.getDuration());
-//        investment.setInvestmentType(InvestmentType.valueOf(investmentDto.getInvestmentType()));
-//
-//    }
+    public ResponseEntity now(Long accountId, InvestmentDto investmentDto) {
+        Account account=accountRepo.findById(accountId).get();
+        Investment investment=new Investment();
+        if(account.getBalance()>=investmentDto.getAmount()){
+            investment.setAmount(investmentDto.getAmount());
+            investment.setDuration(investmentDto.getDuration());
+            investment.setInvestmentType(InvestmentType.valueOf(investmentDto.getInvestmentType()));
+            accountRepo.save(account);
+            investment.setAccount(account);
+            investment.setUser(account.getUser());
+            investmentRepo.save(investment);
+        }else{
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }
