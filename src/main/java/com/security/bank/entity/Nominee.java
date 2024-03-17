@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class Nominee {
 	private String gender;
 
 	private int age;
-	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "account_id")
 	private Account account;

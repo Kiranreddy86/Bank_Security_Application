@@ -6,8 +6,12 @@ import com.security.bank.entity.Card;
 import com.security.bank.entity.CardType;
 import com.security.bank.repository.AccountRepo;
 import com.security.bank.repository.CardRepo;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
 
 @Service
 public class CardService {
@@ -26,20 +30,50 @@ public class CardService {
     }
 
     public ResponseEntity applyNew(Long accNum, CardDto cardDto) {
-        Account account= accountRepo.findByAccountnumber(accNum).get();
-        Card card=account.getCard();
-        if(card==null){
+        try {
+            Account account = accountRepo.findByAccountnumber(accNum).orElse(null);
+            if (account == null) {
+                return ResponseEntity.notFound().build();
+            }
+            Card card = account.getCard();
+            if (card == null) {
+                card = new Card();
+                long randomNumber = (long) (Math.random() * 8999999999999999L) + 1000000000000000L;
+                card.setCardNumber(randomNumber);
+
+            }
+            Date allocationDate = new Date();
+            card.setAllocationDate(allocationDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(allocationDate);
+            calendar.add(Calendar.YEAR, 5);
+            Date expiryDate = calendar.getTime();
+            card.setExpiryDate(expiryDate);
             card.setCardHolderName(cardDto.getCardHolderName());
             card.setPin(cardDto.getPin());
             card.setCardType(CardType.valueOf(cardDto.getCardType()));
+            if(CardType.valueOf(cardDto.getCardType()).equals(CardType.CREDIT_PREMIUM)){
+                card.setDailyLimit(50000);
+            }else if(CardType.valueOf(cardDto.getCardType()).equals(CardType.DEBIT_CLASSIC)){
+                card.setDailyLimit(20000);
+            }else if(CardType.valueOf(cardDto.getCardType()).equals(CardType.DEBIT_GLOBAL)){
+                card.setDailyLimit(20000);
+            }else{
+                card.setDailyLimit(75000);
+            }
+            int randomCvv = (int) (Math.random() * 899 + 100);
+            card.setCvv(randomCvv);
             card.setStatus("ACTIVE");
-            account.setCard(card);
             accountRepo.save(account);
-            return ResponseEntity.ok(cardRepo.save(card));
+            card.setAccount(account);
+            cardRepo.save(card);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.badRequest().build();
-
     }
+
 
     public ResponseEntity<Card> setting(Card card, Long cardNumber) {
         Card c=cardRepo.findByCardNumber(cardNumber).get();

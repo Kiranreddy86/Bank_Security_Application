@@ -82,7 +82,7 @@ public class AccountService {
         return ResponseEntity.ok(acc.getNominee());
     }
 
-    public ResponseEntity<Account> updateNomineeByAc(NomineeDto nomineeDto, Long accountId) {
+    public ResponseEntity<Nominee> updateNomineeByAc(NomineeDto nomineeDto, Long accountId) {
         Account acc=accountRepo.findById(accountId).get();
         Nominee nominee=new Nominee();
         nominee.setName(nomineeDto.getName());
@@ -90,8 +90,8 @@ public class AccountService {
         nominee.setAge(nomineeDto.getAge());
         nominee.setGender(nomineeDto.getGender());
         nominee.setRelation(nomineeDto.getRelation());
-        acc.setNominee(nominee);
-        return ResponseEntity.ok(accountRepo.save(acc));
+        nominee.setAccount(acc);
+        return ResponseEntity.ok(nomineeRepo.save(nominee));
     }
 
     public ResponseEntity<User> getUserByAn(Long accountNumber) {
@@ -110,9 +110,10 @@ public class AccountService {
         user.setIdentityProof(kycDto.getIdentityProof());
         user.setAccountList(null);
         user.setInvestmentList(null);
-        acc.setUser(user);
         userRepo.save(user);
-        return ResponseEntity.ok(accountRepo.save(acc).getUser());
+        acc.setUser(user);
+        accountRepo.save(acc);
+        return ResponseEntity.ok(user);
     }
 
     public ResponseEntity<Account> getAccountSummary(Long accountNumber) {

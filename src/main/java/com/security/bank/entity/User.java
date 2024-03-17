@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,8 +40,10 @@ public class User implements UserDetails{
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id")
 	private Role roles;
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", targetEntity = Account.class)
 	private List accountList = new ArrayList<>();
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", targetEntity = Investment.class)
     private List investmentList = new ArrayList<>();
 	@Override

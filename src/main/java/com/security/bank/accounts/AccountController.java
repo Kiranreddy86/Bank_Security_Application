@@ -34,7 +34,7 @@ public class AccountController {
         return accountService.getNomineeByAccountNumber(accountNumber);
     }
     @PutMapping("/updateNominee/{accountId}")
-    public ResponseEntity<Account> updateNomineeByAc(@RequestBody NomineeDto nomineeDto,@PathVariable Long accountId){
+    public ResponseEntity<Nominee> updateNomineeByAc(@RequestBody NomineeDto nomineeDto,@PathVariable Long accountId){
         return accountService.updateNomineeByAc(nomineeDto,accountId);
     }
     @GetMapping("/getKycDetails")
