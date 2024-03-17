@@ -42,54 +42,23 @@ public class AccountService {
             Account account = new Account();
             account.setAccountType(AccountType.valueOf(accountDto.getAccountType()));
             account.setBalance(accountDto.getBalance());
-            account.setNominee(accountDto.getNominee());
-            account.setProof(account.getProof());
             account.setStatus("ACTIVE");
-            Card card=new Card();
-            Date allocationDate = new Date(); // You may need to set the allocation date based on your application logic
-            card.setAllocationDate(allocationDate);
-            String accountType = String.valueOf(accountDto.getAccountType());
-            if(accountType.equals(SAVINGS)){
-                card.setCardType(CardType.DEBIT_GLOBAL);
-                card.setDailyLimit(40000);
-                account.setAccountType(SAVINGS);
-                account.setInterestRate(270);
-                account.setBranch(BranchType.BOB);
-            }else if(accountType.equals(CURRENT)){
-                card.setCardType(CardType.CREDIT_PREMIUM);
-                card.setDailyLimit(50000);
-                account.setAccountType(CURRENT);
-                account.setInterestRate(52);
-                account.setBranch(BranchType.ICIC);
-            }else if(accountType.equals(SALARY)){
-                card.setCardType(CardType.CREDIT_MASTER);
-                card.setDailyLimit(75000);
-                account.setAccountType(SALARY);
-                account.setInterestRate(41);
-                account.setBranch(BranchType.HDFC);
-            }else{
-                account.setAccountType(AccountType.PPF);
-                account.setInterestRate(74);
-                account.setBranch(BranchType.SBI);
-            }
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(allocationDate);
-            calendar.add(Calendar.YEAR, 5);
-            Date expiryDate = calendar.getTime();
-            card.setExpiryDate(expiryDate);
-            account.setCard(card);
+            account.setProof(accountDto.getProof());
             account.setUser(user);
-            account.setNominee(accountDto.getNominee());
-            cardRepo.save(card);
-            nomineeRepo.save(accountDto.getNominee());
-            accountRepo.save(account);
+            Account savedAccount = accountRepo.save(account);
+            Nominee nominee = accountDto.getNominee();
+            if (nominee != null) {
+                nominee.setAccount(savedAccount);
+                nomineeRepo.save(nominee);
+            }
             List<Account> accountList = user.getAccountList();
             if (accountList == null) {
                 accountList = new ArrayList<>();
             }
-            accountList.add(account);
+            accountList.add(savedAccount);
             user.setAccountList(accountList);
-            return ResponseEntity.ok(account);
+            userRepo.save(user);
+            return ResponseEntity.ok(savedAccount);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
