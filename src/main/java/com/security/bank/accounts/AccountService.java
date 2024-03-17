@@ -44,7 +44,10 @@ public class AccountService {
             account.setBalance(accountDto.getBalance());
             account.setStatus("ACTIVE");
             account.setProof(accountDto.getProof());
+            account.setOpeninigDate(new Date());
             account.setUser(user);
+            long randomNumber = (long) (Math.random() * 899999999999L) + 100000000000L;
+            account.setAccountNumber(randomNumber);
             Account savedAccount = accountRepo.save(account);
             Nominee nominee = accountDto.getNominee();
             if (nominee != null) {
