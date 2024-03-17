@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NomineeRepo extends JpaRepository<Nominee,Long> {
+    void deleteAllByAccountId(Long id);
 }

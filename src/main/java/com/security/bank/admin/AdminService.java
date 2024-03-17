@@ -6,12 +6,14 @@ import com.security.bank.entity.AccountType;
 import com.security.bank.entity.Role;
 import com.security.bank.entity.User;
 import com.security.bank.repository.AccountRepo;
+import com.security.bank.repository.NomineeRepo;
 import com.security.bank.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +21,11 @@ import java.util.stream.Collectors;
 public class AdminService {
     private final AccountRepo accountRepo;
     private final UserRepo userRepo;
-    public AdminService(AccountRepo accountRepo, UserRepo userRepo) {
+    private final NomineeRepo nomineeRepo;
+    public AdminService(AccountRepo accountRepo, UserRepo userRepo, NomineeRepo nomineeRepo) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
+        this.nomineeRepo = nomineeRepo;
     }
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -47,12 +51,17 @@ public class AdminService {
     public ResponseEntity<User> getUserByName(String username) {
         return ResponseEntity.ok(userRepo.findByUsername(username).get());
     }
-
+    @Transactional
     public ResponseEntity<User> deleteUser(String username) {
-        User user =userRepo.findByUsername(username).orElse(null);
-        if(user==null){
+        User user = userRepo.findByUsername(username).orElse(null);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
+        List<Account> accountList = accountRepo.findAllByUserId(user.getId());
+        for (Account account : accountList) {
+            nomineeRepo.deleteAllByAccountId(account.getId());
+        }
+        accountRepo.deleteAll(accountList);
         userRepo.delete(user);
         return ResponseEntity.ok(user);
     }

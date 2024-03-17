@@ -48,11 +48,11 @@ public class AdminController {
     public ResponseEntity<List<Account>> getActiveInAccountList(){
         return adminService.getInActiveAccountList();
     }
-    @GetMapping("/account/getActiveAccountList")
+    @GetMapping("/account/getActiveAccountList/{accountType}")
     public ResponseEntity<List<Account>> getActiveAccountListByType(@PathVariable AccountType accountType){
         return adminService.getActiveAccountListByType(accountType);
     }
-    @GetMapping("/account/getInActiveAccountList")
+    @GetMapping("/account/getInActiveAccountList/{accountType}")
     public ResponseEntity<List<Account>> getInActiveAccountListByType(@PathVariable AccountType accountType){
         return adminService.getInActiveAccountListByType(accountType);
     }

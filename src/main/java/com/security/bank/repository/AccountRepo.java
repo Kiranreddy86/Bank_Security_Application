@@ -28,4 +28,8 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 	List<Account>findAllByBranch(@Param("type") BranchType branchType);
 	@Query(value = "SELECT * FROM account where user_id=:userId",nativeQuery = true)
     List<Account> getAllById(@Param("userId") Long userId);
+	@Query(value = "SELECT * FROM account where user_id=:userId",nativeQuery = true)
+    List<Account> findAllById(@Param("userId") Long id);
+
+	List<Account> findAllByUserId(Long id);
 }

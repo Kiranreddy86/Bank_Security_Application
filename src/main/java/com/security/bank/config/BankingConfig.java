@@ -29,7 +29,7 @@ public class BankingConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/user/register","/auth/login").permitAll()
+                .antMatchers("/user/register","/auth/login","/admin/add").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/account/**","/card/**","/invest/**").hasAnyRole("ADMIN","CUSTOMER")
                 .anyRequest()
