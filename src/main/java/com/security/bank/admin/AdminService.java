@@ -67,15 +67,15 @@ public class AdminService {
     }
 
     public ResponseEntity<Account> deactivate(Long userId, Long accountId) {
-        User user=userRepo.findById(userId).orElse(null);
-        Account account=accountRepo.findById(accountId).orElse(null);
-        if(user==null || account ==null){
+        User user = userRepo.findById(userId).orElse(null);
+        Account account = accountRepo.findById(accountId).orElse(null);
+        if (user == null || account == null) {
             return ResponseEntity.notFound().build();
         }
         account.setStatus("INACTIVE");
-        userRepo.save(user);
         account.setUser(user);
-        return ResponseEntity.ok(accountRepo.save(account));
+        accountRepo.save(account);
+        return ResponseEntity.ok(account);
     }
     public ResponseEntity<Account> activate(Long userId, Long accountId) {
         User user=userRepo.findById(userId).orElse(null);

@@ -18,9 +18,9 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 	@Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
 	Optional<Account> findByAccountnumber(@Param("accountNumber") Long accountNumber);
 
-	@Query(value = "SELECT * FROM account where status=Active",nativeQuery = true)
-	List<Account>findAllActiveAccounts();
-	@Query(value = "SELECT * FROM account where status!=Active",nativeQuery = true)
+	@Query(value = "SELECT * FROM account WHERE status = 'ACTIVE'", nativeQuery = true)
+	List<Account> findAllActiveAccounts();
+	@Query(value = "SELECT * FROM account where status!='ACTIVE'",nativeQuery = true)
 	List<Account>findAllInActiveAccounts();
 	@Query(value = "SELECT * FROM account where account_type=:type",nativeQuery = true)
 	List<Account>findAllByAccountType(@Param("type") AccountType accountType);
